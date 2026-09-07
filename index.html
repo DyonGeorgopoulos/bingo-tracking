@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Ranked draft board for the clan bingo — 94 non-captain buy-ins scored on EHB, weighted raid KC, boss breadth, EHP and hiscores activity.">
+<meta name="robots" content="noindex">
+
+<!-- Discord / Slack / iMessage link preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Buy-In Draft Board">
+<meta property="og:description" content="Ranked draft board for the clan bingo — 94 non-captain buy-ins scored on EHB, weighted raid KC, boss breadth, EHP and hiscores activity.">
+<meta property="og:site_name" content="Clan Bingo">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AF%3C/text%3E%3C/svg%3E">
+<title>Buy-In Draft Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#E9EAE3; --panel:#F3F4EE; --panel-2:#DFE1D8; --edge:#C8CBBE; --edge-soft:#D8DACE;
+  --ink:#1A1D1B; --ink-2:#4B5150; --ink-3:#6E7472;
+  --gold:#8A6414; --gold-soft:#C9A94E; --gold-wash:rgba(138,100,20,.10);
+  --moss:#3D6B44; --rust:#9A3A29; --steel:#3E5C74;
+  --shadow:0 1px 2px rgba(26,29,27,.07), 0 8px 20px rgba(26,29,27,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#141613; --panel:#1D2019; --panel-2:#262A22; --edge:#363B31; --edge-soft:#2C3128;
+    --ink:#E8EAE1; --ink-2:#A8AEA1; --ink-3:#7D8478;
+    --gold:#D8B152; --gold-soft:#8A6E28; --gold-wash:rgba(216,177,82,.10);
+    --moss:#7FB07F; --rust:#D97E63; --steel:#8FB4CE;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px rgba(0,0,0,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141613; --panel:#1D2019; --panel-2:#262A22; --edge:#363B31; --edge-soft:#2C3128;
+  --ink:#E8EAE1; --ink-2:#A8AEA1; --ink-3:#7D8478;
+  --gold:#D8B152; --gold-soft:#8A6E28; --gold-wash:rgba(216,177,82,.10);
+  --moss:#7FB07F; --rust:#D97E63; --steel:#8FB4CE;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:15px; line-height:1.55; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:0 22px 72px}
+a{color:var(--gold)}
+h1,h2,h3{font-family:Fraunces,Georgia,serif; text-wrap:balance; margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-variant-numeric:tabular-nums}
+
+/* ---------- masthead ---------- */
+header.mast{border-bottom:1px solid var(--edge); padding:38px 0 26px; margin-bottom:34px}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:14px}
+h1{font-size:clamp(34px,5.4vw,54px); font-weight:700; line-height:1.02; letter-spacing:-.015em}
+.dek{max-width:60ch; color:var(--ink-2); margin:14px 0 0; font-size:16px}
+.method{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px}
+.chip{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.03em;
+  border:1px solid var(--edge); border-radius:2px; padding:4px 9px; color:var(--ink-2);
+  background:var(--panel)}
+.chip b{color:var(--ink); font-weight:600}
+
+/* ---------- sections ---------- */
+section{margin-bottom:52px}
+.shead{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  border-bottom:2px solid var(--ink); padding-bottom:8px; margin-bottom:8px}
+.shead h2{font-size:24px; font-weight:700; letter-spacing:-.01em}
+.shead .note{font-size:13px; color:var(--ink-3); margin-left:auto}
+.sub{color:var(--ink-2); font-size:14px; max-width:66ch; margin:12px 0 22px}
+
+/* ---------- ladder ---------- */
+.ladder{display:flex; flex-direction:column; gap:0}
+.pick{display:grid; grid-template-columns:56px 1fr; gap:18px;
+  padding:20px 0; border-bottom:1px solid var(--edge-soft)}
+.pick:first-child{border-top:1px solid var(--edge-soft)}
+.pnum{font-family:Fraunces,Georgia,serif; font-size:40px; font-weight:700; line-height:.9;
+  color:var(--gold); text-align:right; padding-top:2px; font-variant-numeric:tabular-nums}
+.pbody{min-width:0}
+.prow{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.pname{font-family:Fraunces,Georgia,serif; font-size:23px; font-weight:700; letter-spacing:-.01em}
+.tag{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; padding:2.5px 7px; border-radius:2px; border:1px solid currentColor}
+.tag.main{color:var(--steel)} .tag.iron{color:var(--ink-3)}
+.tag.gim{color:var(--moss)} .tag.hcim{color:var(--rust)}
+.tag.live{color:var(--moss); border-color:transparent; background:var(--gold-wash)}
+.tag.stale{color:var(--rust)}
+.alias{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-3)}
+tbody td.nm em{font-style:normal; font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3)}
+.pscore{margin-left:auto; display:flex; align-items:center; gap:9px}
+.meter{width:96px; height:5px; background:var(--panel-2); border-radius:1px; overflow:hidden}
+.meter i{display:block; height:100%; background:var(--gold)}
+.pscore b{font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:600;
+  font-variant-numeric:tabular-nums}
+.stats{display:flex; flex-wrap:wrap; gap:0 26px; margin:11px 0 9px}
+.stat{display:flex; flex-direction:column; gap:1px}
+.stat span{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--ink-3)}
+.stat b{font-family:"IBM Plex Mono",monospace; font-size:16px; font-weight:600;
+  font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+.kcs{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px}
+.kc{font-family:"IBM Plex Mono",monospace; font-size:11px; padding:2px 7px;
+  background:var(--panel); border:1px solid var(--edge-soft); border-radius:2px; color:var(--ink-2)}
+.kc b{color:var(--ink); font-weight:600}
+.kc.hi{background:var(--gold-wash); border-color:var(--gold-soft)}
+.pnote{color:var(--ink-2); font-size:14.5px; max-width:72ch; margin:0}
+
+/* ---------- fallback grid ---------- */
+.fbs{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:0 34px}
+.fb{padding:16px 0; border-bottom:1px solid var(--edge-soft)}
+.fbtop{display:flex; align-items:baseline; gap:9px; margin-bottom:5px}
+.fbrank{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3); width:22px}
+.fbname{font-family:Fraunces,Georgia,serif; font-size:18px; font-weight:700}
+.fbstat{margin-left:auto; font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-2)}
+.fbnote{font-size:13.5px; color:var(--ink-2); margin:0 0 0 31px}
+
+/* ---------- flags ---------- */
+.flags{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px}
+.flag{background:var(--panel); border:1px solid var(--edge); border-left:3px solid var(--rust);
+  border-radius:2px; padding:16px 18px}
+.flag.warn{border-left-color:var(--gold)}
+.flag h3{font-size:15px; font-weight:700; margin-bottom:7px}
+.flag p{margin:0; font-size:13.5px; color:var(--ink-2)}
+.flag .names{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink);
+  margin-top:8px; line-height:1.7}
+
+/* ---------- table ---------- */
+.tbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:14px}
+.tbar button{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.04em;
+  background:var(--panel); border:1px solid var(--edge); color:var(--ink-2);
+  padding:5px 11px; border-radius:2px; cursor:pointer}
+.tbar button[aria-pressed="true"]{background:var(--ink); color:var(--ground); border-color:var(--ink)}
+.tbar .hint{margin-left:auto; font-size:12px; color:var(--ink-3)}
+.tscroll{overflow-x:auto; border:1px solid var(--edge); border-radius:2px; background:var(--panel)}
+table{border-collapse:collapse; width:100%; min-width:760px; font-size:13.5px}
+thead th{position:sticky; top:0; background:var(--panel-2); text-align:right;
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em;
+  text-transform:uppercase; font-weight:600; color:var(--ink-2);
+  padding:9px 12px; border-bottom:1px solid var(--edge); cursor:pointer; white-space:nowrap}
+thead th:nth-child(-n+3){text-align:left}
+thead th[aria-sort]{color:var(--ink)}
+thead th[aria-sort]::after{content:" ▾"; color:var(--gold)}
+thead th[aria-sort="ascending"]::after{content:" ▴"}
+tbody td{padding:7px 12px; text-align:right; border-bottom:1px solid var(--edge-soft);
+  font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+tbody td:nth-child(-n+3){text-align:left}
+tbody td.nm{font-family:"IBM Plex Sans",sans-serif; font-weight:500}
+tbody tr:hover{background:var(--gold-wash)}
+tbody tr.gone{opacity:.36}
+tbody tr.gone .nm{text-decoration:line-through}
+.tk{width:30px; cursor:pointer; color:var(--ink-3); user-select:none}
+.tk:hover{color:var(--gold)}
+tr.gone .tk{color:var(--gold)}
+.t-main{color:var(--steel)} .t-iron{color:var(--ink-3)}
+.t-gim{color:var(--moss)} .t-hcim{color:var(--rust)} .t-unknown{color:var(--ink-3)}
+td.stale{color:var(--rust)}
+footer{border-top:1px solid var(--edge); padding-top:22px; color:var(--ink-3); font-size:13px}
+footer p{max-width:74ch}
+:focus-visible{outline:2px solid var(--gold); outline-offset:2px}
+@media (max-width:640px){
+  .pick{grid-template-columns:38px 1fr; gap:12px}
+  .pnum{font-size:28px}
+  .pscore{margin-left:0; width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="mast">
+  <div class="eyebrow">Clan bingo &middot; 94 buy-ins scanned &middot; 7 September 2026</div>
+  <h1>Buy-In Draft Board</h1>
+  <p class="dek">Every non-captain on the buy-in list, pulled from the Wise Old Man snapshot of the
+  OSRS hiscores and ranked for a raids-and-drops board. Eleven captains removed. Two names could
+  not be matched to an account.</p>
+  <div class="method">
+    <span class="chip"><b>32%</b> EHB</span>
+    <span class="chip"><b>24%</b> weighted raid KC</span>
+    <span class="chip"><b>12%</b> elite tier (CM / HMT / Phosani / Colo)</span>
+    <span class="chip"><b>14%</b> boss breadth</span>
+    <span class="chip"><b>9%</b> EHP</span>
+    <span class="chip"><b>9%</b> total XP</span>
+    <span class="chip">&times; activity multiplier</span>
+  </div>
+</header>
+
+<section>
+  <div class="shead"><h2>The first ten</h2><span class="note">draft in this order</span></div>
+  <p class="sub">Ranked on the composite above. Ironmen are included on your instruction — they are
+  labelled, because they bring no bank to the team even when they close tiles fastest.</p>
+  <div class="ladder" id="ladder"></div>
+</section>
+
+<section>
+  <div class="shead"><h2>Fallbacks</h2><span class="note">picks 11&ndash;20</span></div>
+  <p class="sub">Any of these would start on most teams. If your first three picks get sniped,
+  Ironbladey, Shifty Shed and FJ0 replace them with almost no drop in output.</p>
+  <div class="fbs" id="fallbacks"></div>
+</section>
+
+<section>
+  <div class="shead"><h2>Before you spend a pick</h2></div>
+  <div class="flags">
+    <div class="flag">
+      <h3>Elite stats, gone quiet</h3>
+      <p>Top-20 raw numbers, but no hiscores movement in weeks. Confirm they are actually playing
+      before you burn an early pick.</p>
+      <div class="names">Wraith &mdash; 43 days<br>D3v8 &mdash; 98 days<br>jaizza &mdash; 43 days<br>C20 &mdash; 34 days</div>
+    </div>
+    <div class="flag warn">
+      <h3>Drafted under a different name</h3>
+      <p>Six buy-ins play under an in-game name that doesn't match the list. They're scored and
+      ranked here under their roster name.</p>
+      <div class="names">Keg ze &rarr; K eg<br>Mini Swag &rarr; Mini Snag<br>C20 &rarr; Rough Slut<br>Chen &rarr; Seagull Chen<br>juicy &rarr; juicywiggle<br>BilboBongins &rarr; biIboBongins</div>
+    </div>
+    <div class="flag warn">
+      <h3>Specialists worth a late pick</h3>
+      <p>Narrow accounts that happen to be excellent at one thing. Cheap coverage once the
+      obvious names are gone.</p>
+      <div class="names">Shanerkav &mdash; 1,902 Nex<br>Soycap &mdash; 404 ToB, 47 HMT<br>Idrinkibeer &mdash; 93 Colosseum<br>AussieWizzie &mdash; 254 Phosani</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><h2>Full board</h2><span class="note">94 accounts</span></div>
+  <p class="sub">Sort by any column. Tick a name to mark them drafted &mdash; it sticks in your
+  browser only, so nobody else sees your board.</p>
+  <div class="tbar">
+    <button data-f="all" aria-pressed="true">All</button>
+    <button data-f="main" aria-pressed="false">Mains</button>
+    <button data-f="iron" aria-pressed="false">Irons</button>
+    <button id="clear">Clear ticks</button>
+    <span class="hint">Click a column header to re-sort</span>
+  </div>
+  <div class="tscroll">
+    <table>
+      <thead><tr>
+        <th data-k="drafted" style="cursor:default"></th>
+        <th data-k="r" aria-sort="ascending">#</th>
+        <th data-k="n">Name</th>
+        <th data-k="a">Acct</th>
+        <th data-k="s">Score</th>
+        <th data-k="ehb">EHB</th>
+        <th data-k="ehp">EHP</th>
+        <th data-k="rs">Raid pts</th>
+        <th data-k="bc">Bosses</th>
+        <th data-k="xp">XP (M)</th>
+        <th data-k="d">Last seen</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p><b>Method.</b> Boss and skill data comes from the Wise Old Man snapshot of the official OSRS
+  hiscores; nearly all of them refreshed on 6&ndash;7 September 2026. Raid points weight kill counts
+  by difficulty &mdash; Colosseum &times;6, ToB Hard Mode &times;4, CM &times;3, ToB and Phosani &times;2,
+  CoX &times;1, ToA Expert &times;1.8, ToA and Nex &times;0.8, Corrupted Gauntlet &times;0.5. Each
+  component is converted to a percentile across the pool, weighted, then multiplied by an activity
+  factor: 1.00 within 2 days, 0.97 within a week, 0.88 within three weeks, 0.72 within two months,
+  0.50 beyond. Total XP was cross-checked against the official hiscores for the top of the board.</p>
+  <p style="margin-top:12px">Captains excluded: Tuffet, Doug Lee, codeys iron, spedward, 535,
+  J3nkos, 40k, birdman593, 1437 xo, m ass, Gay yonnis.</p>
+</footer>
+</div>
+
+<script>
+const P = [{"r":1,"n":"Uwu kisses","a":"iron","s":96.07,"ehb":1962,"ehp":2382,"xp":751,"rs":6482,"bc":85,"d":1,"kc":[["CoX",1395],["CM",224],["ToB",43],["ToA",91],["ToA-Exp",524],["Nex",3508],["CG",1014]]},{"r":2,"n":"Sooey","a":"main","s":95.59,"ehb":1408,"ehp":1492,"xp":888,"rs":3983,"bc":88,"d":1,"kc":[["CoX",404],["CM",358],["ToB",237],["ToA",210],["ToA-Exp",338],["Nex",1073],["Phosani",165],["Colo",11]]},{"r":3,"n":"amongst it","a":"iron","s":93.49,"ehb":1202,"ehp":1269,"xp":439,"rs":4970,"bc":89,"d":1,"kc":[["CoX",666],["CM",173],["ToB",548],["HMT",352],["ToA",79],["ToA-Exp",373],["Nex",186],["CG",551],["Phosani",61]]},{"r":4,"n":"oreton","a":"main","s":92.96,"ehb":1817,"ehp":2470,"xp":1273,"rs":4896,"bc":67,"d":1,"kc":[["CoX",1927],["CM",582],["ToA",244],["ToA-Exp",86],["Nex",1011],["CG",116],["Colo",1]]},{"r":5,"n":"Full Thend","a":"iron","s":91.64,"ehb":988,"ehp":1419,"xp":450,"rs":3890,"bc":89,"d":1,"kc":[["CoX",665],["CM",83],["ToB",390],["HMT",368],["ToA",39],["ToA-Exp",170],["Nex",97],["CG",255],["Phosani",70],["Colo",7]]},{"r":6,"n":"Lad159","a":"main","s":90.49,"ehb":1301,"ehp":1419,"xp":716,"rs":1212,"bc":88,"d":1,"kc":[["CoX",408],["CM",203],["ToB",28],["ToA",54],["ToA-Exp",4],["Nex",111]]},{"r":7,"n":"Keg ze","a":"main","s":90.07,"ehb":965,"ehp":1208,"xp":677,"rs":3532,"bc":84,"d":1,"kc":[["CoX",269],["CM",148],["ToB",371],["HMT",116],["ToA",40],["ToA-Exp",534],["Nex",324],["CG",50],["Phosani",168]]},{"r":8,"n":"Bourkes","a":"main","s":88.59,"ehb":1029,"ehp":582,"xp":471,"rs":4222,"bc":97,"d":1,"kc":[["CoX",269],["CM",228],["ToB",502],["HMT",59],["ToA",291],["ToA-Exp",793],["Nex",239],["CG",67],["Phosani",36],["Colo",12]]},{"r":9,"n":"Raby Tavern","a":"iron","s":85.96,"ehb":1158,"ehp":2028,"xp":632,"rs":955,"bc":77,"d":1,"kc":[["CoX",446],["CM",31],["ToA",32],["ToA-Exp",79],["Nex",111],["CG",318]]},{"r":10,"n":"Gim bzeem","a":"gim","s":84.81,"ehb":845,"ehp":1311,"xp":575,"rs":2628,"bc":62,"d":1,"kc":[["CoX",1250],["CG",468],["Phosani",572]]},{"r":11,"n":"Ironbladey","a":"main","s":83.97,"ehb":789,"ehp":1439,"xp":693,"rs":840,"bc":92,"d":1,"kc":[["CoX",207],["CM",15],["ToB",2],["ToA",140],["ToA-Exp",141],["Nex",151],["CG",159],["Phosani",9]]},{"r":12,"n":"Iron XIIIV","a":"iron","s":83.78,"ehb":894,"ehp":2111,"xp":684,"rs":1575,"bc":54,"d":1,"kc":[["CoX",731],["ToB",158],["ToA",23],["Nex",5],["Phosani",250],["Colo",1]]},{"r":13,"n":"Shifty Shed","a":"iron","s":83.36,"ehb":722,"ehp":1998,"xp":496,"rs":1402,"bc":75,"d":2,"kc":[["CoX",445],["CM",17],["ToB",224],["HMT",10],["ToA",138],["ToA-Exp",53],["Nex",79],["CG",258],["Phosani",4],["Colo",2]]},{"r":14,"n":"FJ0","a":"main","s":80.19,"ehb":650,"ehp":626,"xp":313,"rs":2210,"bc":86,"d":1,"kc":[["CoX",145],["CM",9],["ToB",322],["HMT",88],["ToA",42],["ToA-Exp",462],["Nex",178],["CG",68]]},{"r":15,"n":"Gogule","a":"main","s":78.71,"ehb":879,"ehp":1457,"xp":614,"rs":1151,"bc":79,"d":1,"kc":[["CoX",49],["ToA",88],["ToA-Exp",29],["CG",1958]]},{"r":16,"n":"byro","a":"main","s":76.19,"ehb":669,"ehp":1154,"xp":499,"rs":1130,"bc":87,"d":1,"kc":[["CoX",183],["ToB",10],["ToA",66],["ToA-Exp",232],["Nex",365],["CG",329]]},{"r":17,"n":"Im Layne","a":"iron","s":73.27,"ehb":596,"ehp":1146,"xp":310,"rs":714,"bc":77,"d":1,"kc":[["CoX",125],["CM",2],["ToB",3],["ToA",41],["ToA-Exp",88],["Nex",100],["CG",600],["Colo",1]]},{"r":18,"n":"Dusty Martin","a":"main","s":72.49,"ehb":600,"ehp":752,"xp":387,"rs":943,"bc":66,"d":1,"kc":[["CoX",245],["CM",21],["ToB",120],["ToA",57],["ToA-Exp",146],["Nex",53],["CG",77],["Colo",1]]},{"r":19,"n":"shark lures","a":"iron","s":72.47,"ehb":532,"ehp":1135,"xp":284,"rs":862,"bc":76,"d":1,"kc":[["CoX",195],["CM",3],["ToB",34],["ToA",21],["ToA-Exp",110],["Nex",220],["CG",386],["Colo",1]]},{"r":20,"n":"Chickenspree","a":"main","s":72.46,"ehb":593,"ehp":737,"xp":362,"rs":551,"bc":79,"d":1,"kc":[["CoX",24],["CM",18],["ToB",19],["ToA",13],["ToA-Exp",102],["Nex",107],["CG",130],["Phosani",9],["Colo",12]]},{"r":21,"n":"Boarder69","a":"main","s":71.95,"ehb":448,"ehp":1141,"xp":515,"rs":620,"bc":73,"d":1,"kc":[["CoX",20],["ToB",178],["HMT",1],["ToA",11],["ToA-Exp",86],["Nex",25],["Phosani",25],["Colo",1]]},{"r":22,"n":"Rainq66","a":"main","s":69.31,"ehb":310,"ehp":813,"xp":381,"rs":826,"bc":86,"d":1,"kc":[["CoX",72],["CM",8],["ToB",125],["ToA",39],["ToA-Exp",77],["Nex",264],["CG",61],["Phosani",34]]},{"r":23,"n":"Wallago","a":"main","s":69.01,"ehb":421,"ehp":1132,"xp":416,"rs":478,"bc":89,"d":1,"kc":[["CoX",171],["CM",2],["ToA",31],["ToA-Exp",68],["Nex",37],["CG",244],["Phosani",1]]},{"r":24,"n":"Plantswift","a":"main","s":67.55,"ehb":447,"ehp":355,"xp":195,"rs":909,"bc":91,"d":7,"kc":[["CoX",57],["CM",50],["ToB",16],["ToA",81],["ToA-Exp",164],["Nex",242],["CG",100],["Colo",11]]},{"r":25,"n":"ImCrazeY","a":"main","s":67.17,"ehb":409,"ehp":1307,"xp":523,"rs":354,"bc":73,"d":1,"kc":[["CoX",30],["CM",17],["ToB",1],["ToA",36],["ToA-Exp",57],["Nex",96],["CG",14],["Phosani",25],["Colo",1]]},{"r":26,"n":"Au Welcome","a":"iron","s":66.19,"ehb":415,"ehp":997,"xp":234,"rs":737,"bc":71,"d":1,"kc":[["CoX",56],["CM",15],["ToB",107],["ToA",10],["ToA-Exp",53],["Nex",144],["CG",406]]},{"r":27,"n":"Shanerkav","a":"main","s":65.77,"ehb":351,"ehp":828,"xp":356,"rs":1621,"bc":76,"d":1,"kc":[["CoX",10],["ToA",109],["ToA-Exp",1],["Nex",1902]]},{"r":28,"n":"Soycap","a":"main","s":64.09,"ehb":322,"ehp":484,"xp":210,"rs":1341,"bc":73,"d":1,"kc":[["CoX",42],["CM",9],["ToB",404],["HMT",47],["ToA",29],["ToA-Exp",56],["Nex",43],["CG",136],["Phosani",25]]},{"r":29,"n":"Sheddisheddi","a":"main","s":62.84,"ehb":415,"ehp":846,"xp":349,"rs":753,"bc":73,"d":1,"kc":[["CoX",62],["ToA",138],["ToA-Exp",72],["Nex",43],["CG",834]]},{"r":30,"n":"EvilYowie","a":"iron","s":62.46,"ehb":561,"ehp":1273,"xp":338,"rs":468,"bc":67,"d":1,"kc":[["CoX",127],["ToA",172],["ToA-Exp",41],["Nex",77],["CG",135]]},{"r":31,"n":"NoLog4Stu","a":"main","s":61.0,"ehb":547,"ehp":868,"xp":395,"rs":372,"bc":68,"d":1,"kc":[["ToA",110],["Nex",355],["CG",1]]},{"r":32,"n":"2tick spliff","a":"main","s":60.24,"ehb":428,"ehp":1536,"xp":836,"rs":53,"bc":66,"d":1,"kc":[["CoX",2],["ToA",4],["ToA-Exp",1],["Nex",50],["Colo",1]]},{"r":33,"n":"Wraith","a":"iron","s":59.68,"ehb":775,"ehp":1871,"xp":493,"rs":1410,"bc":69,"d":43,"kc":[["CoX",140],["CM",1],["ToB",98],["ToA",84],["ToA-Exp",236],["Nex",111],["CG",769],["Phosani",50],["Colo",1]]},{"r":34,"n":"B 0 N D S","a":"main","s":58.14,"ehb":526,"ehp":819,"xp":367,"rs":580,"bc":55,"d":3,"kc":[["CoX",9],["ToA",157],["ToA-Exp",200],["Nex",48],["CG",94]]},{"r":35,"n":"Mini Swag","a":"main","s":57.89,"ehb":360,"ehp":642,"xp":300,"rs":539,"bc":68,"d":0,"kc":[["CoX",70],["CM",1],["ToA",7],["ToA-Exp",140],["Nex",80],["CG",289]]},{"r":36,"n":"Flames Iron","a":"iron","s":57.67,"ehb":299,"ehp":806,"xp":180,"rs":708,"bc":56,"d":1,"kc":[["CoX",35],["CM",109],["ToA",18],["ToA-Exp",73],["CG",400]]},{"r":37,"n":"iron mihii","a":"main","s":54.19,"ehb":306,"ehp":545,"xp":224,"rs":692,"bc":56,"d":1,"kc":[["CoX",75],["CM",3],["ToA",30],["ToA-Exp",28],["Nex",13],["CG",1047]]},{"r":38,"n":"NoZoombies","a":"main","s":53.53,"ehb":370,"ehp":745,"xp":381,"rs":107,"bc":81,"d":1,"kc":[["ToA",23],["ToA-Exp",38],["Nex",25]]},{"r":39,"n":"PrimeNZL","a":"main","s":52.48,"ehb":304,"ehp":320,"xp":240,"rs":1105,"bc":27,"d":1,"kc":[["CoX",107],["CM",24],["ToA",39],["ToA-Exp",497]]},{"r":40,"n":"BilboBongins","a":"main","s":52.37,"ehb":489,"ehp":1171,"xp":470,"rs":35,"bc":57,"d":1,"kc":[["ToA",13],["ToA-Exp",3],["Nex",24]]},{"r":41,"n":"Mr Topkek","a":"main","s":52.17,"ehb":304,"ehp":672,"xp":290,"rs":262,"bc":59,"d":1,"kc":[["CoX",173],["CM",6],["ToA",20],["ToA-Exp",25],["CG",19]]},{"r":42,"n":"ramranchman","a":"iron","s":51.83,"ehb":285,"ehp":1463,"xp":289,"rs":258,"bc":54,"d":1,"kc":[["CoX",4],["CM",2],["ToB",3],["ToA",11],["ToA-Exp",22],["Nex",29],["CG",340]]},{"r":43,"n":"Ausbrainlag","a":"main","s":51.79,"ehb":213,"ehp":476,"xp":230,"rs":772,"bc":56,"d":1,"kc":[["CoX",76],["CM",22],["ToB",258],["ToA",8],["ToA-Exp",44],["Nex",28],["Colo",1]]},{"r":44,"n":"Chen","a":"main","s":50.69,"ehb":228,"ehp":643,"xp":210,"rs":500,"bc":60,"d":1,"kc":[["CoX",23],["CM",34],["ToB",21],["ToA",25],["ToA-Exp",157],["Nex",19],["CG",30]]},{"r":45,"n":"vagimagic","a":"main","s":50.54,"ehb":355,"ehp":599,"xp":254,"rs":145,"bc":77,"d":1,"kc":[["CoX",1],["ToA",37],["ToA-Exp",6],["CG",207]]},{"r":46,"n":"rambocambo7","a":"iron","s":50.47,"ehb":375,"ehp":971,"xp":219,"rs":320,"bc":55,"d":1,"kc":[["CoX",5],["Nex",27],["CG",587]]},{"r":47,"n":"The ro0sters","a":"iron","s":50.09,"ehb":232,"ehp":1184,"xp":222,"rs":339,"bc":60,"d":2,"kc":[["CoX",41],["CM",3],["Nex",55],["CG",490]]},{"r":48,"n":"Rlbbon","a":"main","s":49.98,"ehb":271,"ehp":555,"xp":212,"rs":210,"bc":75,"d":1,"kc":[["CoX",101],["CM",13],["ToA",18],["ToA-Exp",24],["Nex",15]]},{"r":49,"n":"Warrarigi","a":"main","s":49.64,"ehb":118,"ehp":1002,"xp":345,"rs":311,"bc":76,"d":1,"kc":[["CoX",27],["CM",4],["ToB",15],["ToA",34],["ToA-Exp",64],["Nex",111],["CG",10],["Colo",1]]},{"r":50,"n":"Idrinkibeer","a":"main","s":44.9,"ehb":167,"ehp":258,"xp":157,"rs":640,"bc":48,"d":1,"kc":[["CoX",3],["ToA",18],["ToA-Exp",7],["CG",105],["Colo",93]]},{"r":51,"n":"Evil Pawg","a":"iron","s":44.84,"ehb":263,"ehp":850,"xp":179,"rs":100,"bc":78,"d":1,"kc":[["CG",200]]},{"r":52,"n":"Iockedin","a":"main","s":43.81,"ehb":254,"ehp":611,"xp":233,"rs":555,"bc":37,"d":1,"kc":[["CoX",169],["ToA-Exp",92],["CG",441]]},{"r":53,"n":"Smithies007","a":"main","s":42.74,"ehb":255,"ehp":562,"xp":277,"rs":66,"bc":73,"d":1,"kc":[["CoX",1],["ToA",32],["ToA-Exp",16],["Nex",13]]},{"r":54,"n":"juicy","a":"iron","s":42.21,"ehb":274,"ehp":810,"xp":202,"rs":50,"bc":44,"d":1,"kc":[["Phosani",25]]},{"r":55,"n":"redsnoW AU","a":"main","s":41.99,"ehb":232,"ehp":1016,"xp":392,"rs":194,"bc":52,"d":3,"kc":[["CoX",94],["ToA",71],["ToA-Exp",3],["Nex",47]]},{"r":56,"n":"67O","a":"iron","s":41.93,"ehb":153,"ehp":1358,"xp":260,"rs":257,"bc":37,"d":1,"kc":[["CG",502],["Colo",1]]},{"r":57,"n":"au wild","a":"iron","s":39.81,"ehb":166,"ehp":1811,"xp":387,"rs":56,"bc":54,"d":1,"kc":[["CG",112]]},{"r":58,"n":"Jek Son","a":"iron","s":38.52,"ehb":251,"ehp":741,"xp":153,"rs":415,"bc":33,"d":1,"kc":[["ToA",16],["ToA-Exp",79],["CG",519]]},{"r":59,"n":"SomaticMorty","a":"main","s":36.26,"ehb":325,"ehp":473,"xp":218,"rs":30,"bc":47,"d":1,"kc":[["CG",61]]},{"r":60,"n":"jaizza","a":"main","s":35.59,"ehb":245,"ehp":497,"xp":224,"rs":437,"bc":68,"d":43,"kc":[["CoX",127],["CM",1],["ToA",43],["ToA-Exp",131],["Nex",29],["CG",15],["Colo",1]]},{"r":61,"n":"mr woolley","a":"main","s":35.45,"ehb":192,"ehp":534,"xp":229,"rs":141,"bc":54,"d":1,"kc":[["CoX",5],["ToB",1],["ToA",64],["ToA-Exp",23],["CG",83]]},{"r":62,"n":"Mellow Mikey","a":"main","s":34.82,"ehb":180,"ehp":445,"xp":177,"rs":142,"bc":53,"d":2,"kc":[["CoX",5],["CM",2],["ToB",2],["ToA",19],["ToA-Exp",49],["CG",48]]},{"r":63,"n":"turbo herbo","a":"main","s":34.59,"ehb":145,"ehp":388,"xp":166,"rs":42,"bc":71,"d":1,"kc":[["ToA",17],["Nex",28],["Colo",1]]},{"r":64,"n":"3iw","a":"main","s":34.2,"ehb":184,"ehp":408,"xp":180,"rs":322,"bc":46,"d":1,"kc":[["CoX",37],["ToA",58],["ToA-Exp",59],["CG",265]]},{"r":65,"n":"AussieWizzie","a":"main","s":33.68,"ehb":58,"ehp":162,"xp":75,"rs":541,"bc":38,"d":1,"kc":[["Nex",41],["Phosani",254]]},{"r":66,"n":"Bashnu","a":"main","s":33.48,"ehb":220,"ehp":592,"xp":246,"rs":30,"bc":54,"d":1,"kc":[["CoX",13],["CG",35]]},{"r":67,"n":"Spoolin","a":"main","s":32.4,"ehb":73,"ehp":380,"xp":200,"rs":59,"bc":67,"d":1,"kc":[["CoX",12],["ToA",14],["ToA-Exp",10],["Phosani",9]]},{"r":68,"n":"Gooiesolo","a":"iron","s":32.24,"ehb":135,"ehp":616,"xp":119,"rs":448,"bc":31,"d":1,"kc":[["CoX",77],["ToB",20],["ToA",26],["ToA-Exp",50],["CG",440]]},{"r":69,"n":"C20","a":"iron","s":31.98,"ehb":230,"ehp":784,"xp":179,"rs":544,"bc":56,"d":34,"kc":[["ToA",52],["ToA-Exp",190],["CG",321]]},{"r":70,"n":"causinkaos","a":"main","s":31.06,"ehb":81,"ehp":600,"xp":228,"rs":17,"bc":76,"d":1,"kc":[["CoX",3],["ToA",5],["Nex",9],["CG",5]]},{"r":71,"n":"D3v8","a":"main","s":30.51,"ehb":420,"ehp":247,"xp":189,"rs":1381,"bc":51,"d":98,"kc":[["CoX",170],["CM",106],["ToB",128],["ToA",48],["ToA-Exp",199],["Nex",300]]},{"r":72,"n":"Mitch_99","a":"main","s":30.19,"ehb":169,"ehp":389,"xp":151,"rs":253,"bc":42,"d":1,"kc":[["CoX",1],["CG",504]]},{"r":73,"n":"pure ceage","a":"main","s":29.97,"ehb":47,"ehp":196,"xp":96,"rs":445,"bc":18,"d":1,"kc":[["CoX",3],["ToA",17],["Nex",5],["Phosani",212]]},{"r":74,"n":"SacredDream","a":"main","s":29.19,"ehb":107,"ehp":844,"xp":350,"rs":11,"bc":53,"d":1,"kc":[["CoX",1],["ToA",10],["ToA-Exp",1]]},{"r":75,"n":"Gim Raff","a":"gim","s":28.11,"ehb":116,"ehp":216,"xp":86,"rs":223,"bc":43,"d":1,"kc":[["CoX",17],["CM",1],["ToA",71],["ToA-Exp",30],["CG",185]]},{"r":76,"n":"Kenners27","a":"main","s":27.28,"ehb":101,"ehp":397,"xp":171,"rs":42,"bc":51,"d":1,"kc":[["CoX",3],["ToA",2],["CG",62],["Colo",1]]},{"r":77,"n":"mahfeo","a":"main","s":26.83,"ehb":101,"ehp":538,"xp":184,"rs":141,"bc":43,"d":1,"kc":[["CoX",1],["ToA",116],["ToA-Exp",26]]},{"r":78,"n":"vincedonfe","a":"iron","s":26.13,"ehb":113,"ehp":826,"xp":145,"rs":40,"bc":45,"d":1,"kc":[["CoX",1],["ToA",3],["ToA-Exp",1],["CG",70]]},{"r":79,"n":"Dr eamZzz","a":"main","s":24.38,"ehb":73,"ehp":447,"xp":150,"rs":104,"bc":52,"d":1,"kc":[["Nex",130]]},{"r":80,"n":"Abby Queen","a":"main","s":20.89,"ehb":29,"ehp":847,"xp":1243,"rs":0,"bc":7,"d":1,"kc":[]},{"r":81,"n":"2roots","a":"main","s":20.81,"ehb":133,"ehp":469,"xp":219,"rs":0,"bc":32,"d":1,"kc":[]},{"r":82,"n":"OhhTheHorror","a":"iron","s":19.48,"ehb":53,"ehp":972,"xp":210,"rs":0,"bc":28,"d":1,"kc":[]},{"r":83,"n":"Shifty mex","a":"main","s":18.79,"ehb":78,"ehp":171,"xp":80,"rs":184,"bc":18,"d":7,"kc":[["CoX",4],["ToA",72],["ToA-Exp",68]]},{"r":84,"n":"Spodgeybear","a":"main","s":15.03,"ehb":47,"ehp":292,"xp":92,"rs":21,"bc":31,"d":1,"kc":[["CoX",9],["ToA",1],["ToA-Exp",6]]},{"r":85,"n":"trip is hard","a":"hcim","s":15.03,"ehb":39,"ehp":288,"xp":59,"rs":20,"bc":13,"d":1,"kc":[["CoX",14],["CM",2]]},{"r":86,"n":"SpaceCity95","a":"main","s":13.93,"ehb":46,"ehp":297,"xp":104,"rs":7,"bc":39,"d":2,"kc":[["CoX",1],["ToA",6],["CG",3]]},{"r":87,"n":"khuntz","a":"iron","s":12.89,"ehb":23,"ehp":669,"xp":183,"rs":0,"bc":7,"d":1,"kc":[]},{"r":88,"n":"7JKE7","a":"main","s":11.93,"ehb":32,"ehp":192,"xp":104,"rs":15,"bc":24,"d":1,"kc":[["ToA",16],["ToA-Exp",1]]},{"r":89,"n":"Mavinnnn","a":"main","s":10.89,"ehb":16,"ehp":312,"xp":94,"rs":11,"bc":31,"d":1,"kc":[["ToA",14]]},{"r":90,"n":"Qwongy","a":"hcim","s":10.17,"ehb":18,"ehp":527,"xp":82,"rs":11,"bc":12,"d":4,"kc":[["CG",22]]},{"r":91,"n":"keep cutting","a":"main","s":7.89,"ehb":23,"ehp":206,"xp":132,"rs":0,"bc":10,"d":2,"kc":[]},{"r":92,"n":"TheRasIsBack","a":"main","s":7.38,"ehb":11,"ehp":237,"xp":101,"rs":0,"bc":22,"d":2,"kc":[]},{"r":93,"n":"b lackwell","a":"iron","s":6.38,"ehb":11,"ehp":186,"xp":32,"rs":9,"bc":13,"d":1,"kc":[["CoX",5],["ToA",1],["ToA-Exp",2]]},{"r":94,"n":"beanstrap","a":"main","s":6.09,"ehb":19,"ehp":61,"xp":15,"rs":0,"bc":13,"d":1,"kc":[]}];
+const NOTES = {"Uwu kisses": "Best raw account in the pool and it isn't close — 1,962 EHB, 3,508 Nex, 1,014 Corrupted Gauntlet, 524 ToA Expert. Ironman, so he brings no bank to the team, but he closes drop tiles faster than anyone here.", "Sooey": "The main you take if you only get one. 358 CM and 237 ToB on top of 1,073 Nex and 165 Phosani, plus 888M XP and 11 Colosseum. Can buy supplies, can lead a raid team, covers skilling tiles too.", "amongst it": "The ToB specialist — 548 ToB and 352 Hard Mode is the deepest Theatre resume in the whole list. 89 distinct bosses. Ironman, but he unlocks every Theatre tile on the board.", "oreton": "Volume monster: 1.27B XP, 2,470 EHP, 1,927 CoX and 582 CM. Highest skilling ceiling in the pool by a wide margin, so he doubles as your skilling-tile insurance.", "Full Thend": "368 HMT and 665 CoX with 89 bosses touched. Elite Theatre and Chambers on an iron, plus 70 Phosani and 7 Colosseum. Grinds hard and grinds current content.", "Lad159": "1,301 EHB with 203 CM. 5,960 Alchemical Hydra is the single biggest slayer-boss grind here — if there's a Hydra or slayer-unique tile, he's already halfway through it.", "Bourkes": "97 distinct bosses — the widest coverage of anyone. 793 ToA Expert, 502 ToB, 228 CM, 12 Colosseum. Low EHP because he only does PvM, which is exactly what a bingo wants.", "Raby Tavern": "2,028 EHP alongside 1,158 EHB — rare on an iron. 446 CoX, 2,970 Zulrah, 1,914 Hydra, 1,637 Duke. Genuinely well-rounded, no obvious dead tiles.", "Gim bzeem": "1,250 CoX and 572 Phosani. Group ironman, so account restrictions apply, but the Chambers and Nightmare grinds are top-five in the pool.", "Iron XIIIV": "2,111 EHP and 894 EHB. 731 CoX, 250 Phosani, 158 ToB. Skiller-bosser hybrid who covers both halves of a mixed board.", "Ironbladey": "92 bosses, 1,439 EHP, 3,112 Vardorvis. Enormous breadth and a main, so gear isn't a constraint. First name off the fallback list.", "Shifty Shed": "1,998 EHP and 722 EHB on an iron, with 445 CoX and 224 ToB. Only reason he isn't higher is thinner elite-tier KC.", "FJ0": "3,087 Vardorvis, 462 ToA Expert, 322 ToB with 88 HMT. Pure PvM main — 86 bosses and almost no wasted time.", "Gogule": "1,958 Corrupted Gauntlet is absurd. 1,457 EHP, 879 EHB, 2,825 Zulrah. If a tile touches Gauntlet or mid-tier drops, take him early.", "byro": "3,837 Cerberus, 1,686 Hydra, 365 Nex, 87 bosses. Slayer-boss engine with real raid backup.", "Im Layne": "4,000 Alchemical Hydra and 600 Corrupted Gauntlet on an iron. Narrow but very deep — great for a board with big-grind tiles.", "Dusty Martin": "245 CoX, 1,321 Vardorvis, 1,215 Leviathan. Strong DT2 coverage, which is often where bingo boards hide the hard uniques.", "shark lures": "2,318 Hydra, 386 CG, 220 Nex, 195 CoX. Consistent iron with 76 bosses and no gaps.", "Chickenspree": "12 Colosseum and 102 ToA Expert on a main with 737 EHP. Good all-rounder who can actually clear the harder single-player tiles.", "Boarder69": "7,246 Zulrah and 178 ToB. 515M XP main — reliable, active daily, covers both drop-hunting and skilling.", "Shanerkav": "1,902 Nex — the second-biggest Nex grind in the pool behind Uwu kisses. Take him if the board has Nex uniques on it.", "Plantswift": "91 bosses and 447 EHB on only 355 EHP — pure efficiency. 50 CM, 242 Nex, 11 Colosseum. Was a week between updates, so confirm he's still on.", "Wraith": "On raw stats he'd be top 12 — 775 EHB, 1,871 EHP, 769 CG, 236 ToA Expert. He has not moved on the hiscores in 43 days. Message him before you spend a pick.", "D3v8": "1,381 raid score is top-ten material — 170 CoX, 106 CM, 300 Nex. Last hiscores movement was 98 days ago. High risk, high reward.", "Soycap": "404 ToB and 47 HMT on a 484 EHP main. Theatre depth well above his overall size — a cheap way to cover Theatre tiles late in the draft.", "Keg ze": "Playing as K eg. The biggest riser once his name was fixed — 371 ToB with 116 Hard Mode, 148 CM, 534 ToA Expert, 168 Phosani, on a 677M XP main. 965 EHB across 84 bosses and he can fund the team.", "Mini Swag": "Playing as Mini Snag. 1,416 Vardorvis and 140 ToA Expert, updated this morning — the most recently active account in the whole pool.", "BilboBongins": "Playing as biIboBongins (capital i, not L). 3,017 Vorkath and 2,271 Cerberus on 1,171 EHP. Slayer-boss grinder, thin on raids.", "Chen": "Playing as Seagull Chen. 157 ToA Expert and 34 CM on a mid-size main — better raid habits than his 228 EHB suggests.", "C20": "Playing as Rough Slut. 321 CG and 190 ToA Expert on an iron, but no hiscores movement in 34 days. Confirm before drafting."};
+const fmt = n => n.toLocaleString('en-US');
+const seen = d => d <= 1 ? 'today' : d + 'd ago';
+const IGN = {"Chen": "Seagull Chen", "Mini Swag": "Mini Snag", "Keg ze": "K eg", "C20": "Rough Slut", "BilboBongins": "biIboBongins", "juicy": "juicywiggle"};
+const alias = n => IGN[n] ? `<span class="alias">plays as ${IGN[n]}</span>` : '';
+const HIKC = new Set(['CM','HMT','Phosani','Colo']);
+
+/* ---- ladder ---- */
+const FLOOR = 55, TOP = P[0].s;
+const bar = s => Math.max(6, Math.min(100, (s-FLOOR)/(TOP-FLOOR)*100));
+document.getElementById('ladder').innerHTML = P.slice(0,10).map(p => `
+  <article class="pick">
+    <div class="pnum">${p.r}</div>
+    <div class="pbody">
+      <div class="prow">
+        <span class="pname">${p.n}</span>
+        <span class="tag ${p.a}">${p.a}</span>
+        ${alias(p.n)}
+        ${p.d<=2?'<span class="tag live">played today</span>':''}
+        <span class="pscore"><span class="meter"><i style="width:${bar(p.s).toFixed(1)}%"></i></span><b>${p.s.toFixed(1)}</b></span>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>EHB</span><b>${fmt(p.ehb)}</b></div>
+        <div class="stat"><span>EHP</span><b>${fmt(p.ehp)}</b></div>
+        <div class="stat"><span>Raid pts</span><b>${fmt(p.rs)}</b></div>
+        <div class="stat"><span>Bosses</span><b>${p.bc}</b></div>
+        <div class="stat"><span>Total XP</span><b>${fmt(p.xp)}M</b></div>
+      </div>
+      <div class="kcs">${p.kc.map(k=>`<span class="kc${HIKC.has(k[0])?' hi':''}">${k[0]} <b>${fmt(k[1])}</b></span>`).join('')}</div>
+      <p class="pnote">${NOTES[p.n]||''}</p>
+    </div>
+  </article>`).join('');
+
+/* ---- fallbacks ---- */
+document.getElementById('fallbacks').innerHTML = P.slice(10,20).map(p => `
+  <div class="fb">
+    <div class="fbtop">
+      <span class="fbrank">${p.r}</span>
+      <span class="fbname">${p.n}</span>
+      <span class="tag ${p.a}">${p.a}</span>
+      ${alias(p.n)}<span class="fbstat">${fmt(p.ehb)} EHB &middot; ${p.bc} bosses</span>
+    </div>
+    <p class="fbnote">${NOTES[p.n]||''}</p>
+  </div>`).join('');
+
+/* ---- table ---- */
+const tbody = document.getElementById('tbody');
+let sortKey='r', sortAsc=true, filter='all';
+let drafted = new Set();
+try{ drafted = new Set(JSON.parse(localStorage.getItem('bingo.drafted')||'[]')); }catch(e){}
+const save = () => { try{ localStorage.setItem('bingo.drafted', JSON.stringify([...drafted])); }catch(e){} };
+
+function render(){
+  const rows = P.filter(p => filter==='all' || p.a===filter)
+    .slice().sort((a,b)=>{
+      const x=a[sortKey], y=b[sortKey];
+      const c = typeof x==='string' ? x.localeCompare(y) : x-y;
+      return sortAsc ? c : -c;
+    });
+  tbody.innerHTML = rows.map(p=>`
+    <tr data-n="${p.n}" class="${drafted.has(p.n)?'gone':''}">
+      <td class="tk" role="button" tabindex="0" aria-label="Mark ${p.n} drafted">${drafted.has(p.n)?'&#10003;':'&#9633;'}</td>
+      <td>${p.r}</td>
+      <td class="nm">${p.n}${IGN[p.n]?` <em>${IGN[p.n]}</em>`:''}</td>
+      <td class="t-${p.a}">${p.a}</td>
+      <td>${p.s.toFixed(1)}</td>
+      <td>${fmt(p.ehb)}</td>
+      <td>${fmt(p.ehp)}</td>
+      <td>${fmt(p.rs)}</td>
+      <td>${p.bc}</td>
+      <td>${fmt(p.xp)}</td>
+      <td class="${p.d>21?'stale':''}">${seen(p.d)}</td>
+    </tr>`).join('');
+}
+render();
+
+document.querySelectorAll('thead th[data-k]').forEach(th=>{
+  if(th.dataset.k==='drafted') return;
+  th.addEventListener('click',()=>{
+    const k=th.dataset.k;
+    if(sortKey===k) sortAsc=!sortAsc;
+    else { sortKey=k; sortAsc = (k==='r'||k==='n'||k==='a'||k==='d'); }
+    document.querySelectorAll('thead th').forEach(t=>t.removeAttribute('aria-sort'));
+    th.setAttribute('aria-sort', sortAsc?'ascending':'descending');
+    render();
+  });
+});
+function toggle(tr){
+  const n=tr.dataset.n;
+  drafted.has(n) ? drafted.delete(n) : drafted.add(n);
+  save(); render();
+}
+tbody.addEventListener('click', e=>{ const c=e.target.closest('.tk'); if(c) toggle(c.closest('tr')); });
+tbody.addEventListener('keydown', e=>{
+  if(e.key!=='Enter' && e.key!==' ') return;
+  const c=e.target.closest('.tk'); if(c){ e.preventDefault(); toggle(c.closest('tr')); }
+});
+document.querySelectorAll('.tbar button[data-f]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    filter=b.dataset.f;
+    document.querySelectorAll('.tbar button[data-f]').forEach(x=>x.setAttribute('aria-pressed', x===b));
+    render();
+  });
+});
+document.getElementById('clear').addEventListener('click',()=>{ drafted.clear(); save(); render(); });
+</script>
+</body>
+</html>
